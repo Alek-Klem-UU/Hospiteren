@@ -690,23 +690,24 @@
     margin-top: 52px;
     display: flex;
     flex-wrap: wrap;
-    gap: 0;
+    gap: 8px;
   }
 
   .comp-tag {
     font-family: 'Newsreader', serif;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-style: italic;
-    color: var(--muted);
-    padding: 4px 0;
-    margin-right: 6px;
+    color: var(--dim);
+    padding: 7px 16px;
+    border: 1px solid var(--border);
     cursor: default;
-    transition: color 0.2s;
+    transition: color 0.22s, border-color 0.22s;
   }
 
-  .comp-tag::after { content: ' ·'; }
-  .comp-tag:last-child::after { content: ''; }
-  .comp-tag:hover { color: var(--dim); }
+  .comp-tag:hover {
+    color: var(--text);
+    border-color: rgba(208,152,80,0.28);
+  }
 
   /* ── Contact ── */
   #contact {
