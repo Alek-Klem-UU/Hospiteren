@@ -47,6 +47,23 @@ body {
   z-index: 50;
   box-shadow: 0 1px 4px rgba(0,0,0,0.07);
 }
+
+/* ── CV download button ── */
+.cv-download {
+  position: fixed; top: 50px; right: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.60rem; font-weight: 400;
+  letter-spacing: 0.06em;
+  padding: 5px 12px;
+  background: var(--paper); color: var(--muted);
+  border: 1px solid var(--rule-l);
+  cursor: pointer; text-decoration: none;
+  display: block; line-height: 1;
+  z-index: 50;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  transition: background 0.15s, color 0.15s;
+}
+.cv-download:hover { background: var(--tbl-bg); color: var(--text); }
 .lang-btn {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.65rem; font-weight: 400;
@@ -166,6 +183,19 @@ body {
 .section p:last-child { margin-bottom: 0; }
 sup a { color: var(--accent); text-decoration: none; font-size: 0.72em; }
 sup a:hover { text-decoration: underline; }
+
+/* ── Section bullet lists ── */
+.section-list {
+  list-style: none; padding: 0; margin: 0;
+}
+.section-list li {
+  padding-left: 1.1em; position: relative;
+  margin-bottom: 3px; font-size: 0.95rem;
+}
+.section-list li::before {
+  content: '—'; position: absolute; left: 0;
+  color: var(--muted); font-size: 0.8em; top: 0.15em;
+}
 
 /* ── Tables ── */
 .fig { margin: 20px 0; }
@@ -290,6 +320,7 @@ a { color: var(--accent); }
   <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
   <button class="lang-btn" data-lang="nl" aria-pressed="false">NL</button>
 </div>
+<a class="cv-download" href="cv.pdf" download="Alek_Klem_CV.pdf">↓ CV</a>
 
 <article>
 
@@ -316,7 +347,7 @@ a { color: var(--accent); }
 
   <section class="abstract" aria-label="Abstract">
     <h2 class="abstract-heading" data-i18n="abstract_heading">Abstract</h2>
-    <p data-i18n="abstract_text">This document presents a structured account of the academic trajectory, research activities, and professional background of the author. Starting from an initial enrollment in Applied Physics at Delft University of Technology (2022), the author subsequently transferred to Artificial Intelligence at Utrecht University (2023), where current work focuses on social sycophancy in large language models — specifically, how model outputs vary across UI and API environments in response to social pressure cues.<sup><a href="#fn3">[3]</a></sup> Preliminary results suggest the author is available for internships and research collaborations. Contact information is provided in §6.</p>
+    <p data-i18n="abstract_text">BSc student in Artificial Intelligence at Utrecht University, researching social sycophancy in large language models. Prior background in Applied Physics (TU Delft, 2022–2023). Available for internships and research collaborations — contact details in §6.</p>
   </section>
 
   <div class="keywords">
@@ -343,8 +374,8 @@ a { color: var(--accent); }
   <!-- §1 -->
   <section id="s1" class="section">
     <h2 class="section-heading"><span class="section-num">1.</span><span data-i18n="s1_heading">Introduction</span></h2>
-    <p data-i18n="s1_p1">The author (b. 14 April 2004, Rotterdam, Netherlands) is a third-year BSc student in Artificial Intelligence at Utrecht University. An initial period of study in Applied Physics at TU Delft (2022–2023) provided a foundation in analytical and mathematical reasoning, subsequently informing a transition toward the study of intelligent systems.<sup><a href="#fn1">[1]</a></sup></p>
-    <p data-i18n="s1_p2">Current research centers on <em>social sycophancy</em> in large language models — the tendency of such systems to adjust outputs in accordance with perceived user preferences rather than factual accuracy. This work sits at the intersection of NLP, HCI, and AI safety.</p>
+    <p data-i18n="s1_p1">Third-year BSc student in Artificial Intelligence at Utrecht University, with a prior year in Applied Physics at TU Delft (2022–2023).<sup><a href="#fn1">[1]</a></sup></p>
+    <p data-i18n="s1_p2">Current research focuses on <em>social sycophancy</em> in large language models — how outputs shift in response to perceived user preferences rather than factual accuracy. This sits at the intersection of NLP, HCI, and AI safety.</p>
     <div class="fig" style="margin-top:22px;">
       <div class="fig-caption-top" data-i18n="t1_caption">Table 1 — Author metadata</div>
       <table class="meta-table">
@@ -367,11 +398,23 @@ a { color: var(--accent); }
   <section id="s2" class="section">
     <h2 class="section-heading"><span class="section-num">2.</span><span data-i18n="s2_heading">Academic Background</span></h2>
     <h3 class="subsection-heading"><span>2.1 <span data-i18n="s2_1_org">Utrecht University</span></span><span class="sub-period">2023 — present</span></h3>
-    <p data-i18n="s2_1_text">BSc Artificial Intelligence. Relevant coursework: Machine Learning, Data Structures &amp; Algorithms. Minor in Mathematics: Calculus, Linear Algebra, Programming for Mathematics. Current thesis: Social Sycophancy in LLMs across UI and API environments.</p>
+    <div data-i18n="s2_1_text"><ul class="section-list">
+      <li>BSc Artificial Intelligence</li>
+      <li>Coursework: Machine Learning, Data Structures &amp; Algorithms</li>
+      <li>Minor in Mathematics: Calculus, Linear Algebra</li>
+      <li>Thesis: Social Sycophancy in LLMs across UI and API environments</li>
+    </ul></div>
     <h3 class="subsection-heading"><span>2.2 <span data-i18n="s2_2_org">Delft University of Technology</span></span><span class="sub-period">2022 — 2023</span></h3>
-    <p data-i18n="s2_2_text">BSc Applied Physics.<sup><a href="#fn2">[2]</a></sup> Strong analytical and mathematical foundation acquired through coursework in mechanics, electromagnetism, and mathematical physics. Transferred to AI to pursue focus on intelligent systems.</p>
+    <div data-i18n="s2_2_text"><ul class="section-list">
+      <li>BSc Applied Physics</li>
+      <li>Coursework: Mechanics, Electromagnetism, Mathematical Physics</li>
+      <li>Transferred to AI to focus on intelligent systems</li>
+    </ul></div>
     <h3 class="subsection-heading"><span>2.3 <span data-i18n="s2_3_org">Erasmiaans Gymnasium, Rotterdam</span></span><span class="sub-period">2016 — 2022</span></h3>
-    <p data-i18n="s2_3_text">Gymnasium diploma. Classical pre-university education with emphasis on sciences and languages.</p>
+    <div data-i18n="s2_3_text"><ul class="section-list">
+      <li>Gymnasium diploma</li>
+      <li>Classical pre-university education, sciences &amp; languages track</li>
+    </ul></div>
   </section>
 
   <hr class="rule-section">
@@ -393,7 +436,7 @@ a { color: var(--accent); }
         <span class="exp-period">2024 — present</span>
       </div>
       <div class="exp-org" data-i18n="s3_2_org">Jordy's Bakery, Rotterdam</div>
-      <p data-i18n="s3_2_text">All-round hospitality work in a busy bakery.<sup><a href="#fn4">[4]</a></sup></p>
+      <p data-i18n="s3_2_text">All-round hospitality work in a busy bakery.</p>
     </div>
   </section>
 
@@ -402,8 +445,8 @@ a { color: var(--accent); }
   <!-- §4 -->
   <section id="s4" class="section">
     <h2 class="section-heading"><span class="section-num">4.</span><span data-i18n="s4_heading">Current Research</span></h2>
-    <p data-i18n="s4_p1">The author's BSc thesis investigates <em>social sycophancy</em> in large language models — the phenomenon whereby model outputs shift in response to social pressure cues embedded in user prompts, independent of factual merit. This behaviour has significant implications for AI safety, as sycophantic models may reinforce incorrect beliefs and reduce the reliability of AI-assisted decision-making.</p>
-    <p data-i18n="s4_p2">The methodology involves a fully automated web-interaction pipeline capable of submitting structured prompts to both conversational UI environments and direct API endpoints, enabling systematic comparison of model behaviour across interaction modalities. See <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener noreferrer">github.com/Alek-Klem-UU/SycoUI</a>.</p>
+    <p data-i18n="s4_p1">BSc thesis: <em>social sycophancy</em> in large language models — how model outputs shift in response to social pressure cues, independent of factual merit. Relevant to AI safety, as sycophantic models may reinforce incorrect beliefs.</p>
+    <p data-i18n="s4_p2">Methodology: fully automated web-interaction pipeline comparing model behaviour across UI and API environments. See <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener noreferrer">github.com/Alek-Klem-UU/SycoUI</a>.</p>
     <div class="research-fig">
       <canvas id="project-canvas" aria-hidden="true"></canvas>
       <div class="fig-caption-bottom" data-i18n="fig1_caption">Figure 1 — Sycophancy detection pipeline (automated web-interaction framework)</div>
@@ -465,18 +508,12 @@ a { color: var(--accent); }
   <section class="footnotes" aria-label="Notes">
     <div class="footnotes-heading" data-i18n="fn_heading">Notes</div>
     <div class="footnote" id="fn1"><span class="footnote-num">[1]</span><span data-i18n="fn1_text">Physics provides a useful prior for approaching ML problems — both fields involve optimising for quantities that can never be perfectly measured.</span></div>
-    <div class="footnote" id="fn2"><span class="footnote-num">[2]</span><span data-i18n="fn2_text">At the time of enrollment, TU Delft was ranked among the top technical universities in Europe. This is noted for completeness, not as a personal achievement claim.</span></div>
-    <div class="footnote" id="fn3"><span class="footnote-num">[3]</span><span data-i18n="fn3_text">Defined here as the tendency of a model to tell users what they want to hear. The author acknowledges the structural irony of studying this phenomenon in a document designed to impress prospective employers.</span></div>
-    <div class="footnote" id="fn4"><span class="footnote-num">[4]</span><span data-i18n="fn4_text">See reference [4]. Not peer-reviewed.</span></div>
   </section>
 
   <section class="references">
     <div class="references-heading" data-i18n="ref_heading">References</div>
     <ol class="ref-list">
       <li><span class="ref-num">[1]</span><span data-i18n="ref1">A. Klem, "Social Sycophancy in Large Language Models: Behavioural Differences Across UI and API Environments," BSc Thesis, Utrecht University, 2025. <em>In preparation.</em> <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener">github.com/Alek-Klem-UU/SycoUI</a></span></li>
-      <li><span class="ref-num">[2]</span><span data-i18n="ref2">Python Software Foundation, <em>Python Language Reference</em>, version 3.x. [Online]. Available: <a href="https://www.python.org" target="_blank" rel="noopener">python.org</a></span></li>
-      <li><span class="ref-num">[3]</span><span data-i18n="ref3">G. Hinton, D. E. Rumelhart, and R. J. Williams, "Learning representations by back-propagating errors," <em>Nature</em>, vol. 323, pp. 533–536, 1986. Listed to demonstrate awareness of foundational literature.</span></li>
-      <li><span class="ref-num">[4]</span><span data-i18n="ref4">Jordy's Bakery, <em>Staff Handbook</em>. Rotterdam, 2024. Internal document. Not publicly available.</span></li>
     </ol>
   </section>
 
@@ -500,36 +537,48 @@ const TRANSLATIONS = {
     status_label: 'Status:',
     status_val: 'Under review',
     abstract_heading: 'Abstract',
-    abstract_text: `This document presents a structured account of the academic trajectory, research activities, and professional background of the author. Starting from an initial enrollment in Applied Physics at Delft University of Technology (2022), the author subsequently transferred to Artificial Intelligence at Utrecht University (2023), where current work focuses on social sycophancy in large language models — specifically, how model outputs vary across UI and API environments in response to social pressure cues.<sup><a href="#fn3">[3]</a></sup> Preliminary results suggest the author is available for internships and research collaborations. Contact information is provided in §6.`,
+    abstract_text: `BSc student in Artificial Intelligence at Utrecht University, researching social sycophancy in large language models. Prior background in Applied Physics (TU Delft, 2022–2023). Available for internships and research collaborations — contact details in §6.`,
     keywords_label: 'Keywords:',
     keywords_text: 'artificial intelligence · machine learning · sycophancy · NLP · Python · Rotterdam · available',
     toc_heading: 'Contents',
     toc_1: 'Introduction', toc_2: 'Academic Background', toc_3: 'Professional Experience',
     toc_4: 'Current Research', toc_5: 'Technical Competencies', toc_6: 'Correspondence',
     s1_heading: 'Introduction',
-    s1_p1: `The author (b. 14 April 2004, Rotterdam, Netherlands) is a third-year BSc student in Artificial Intelligence at Utrecht University. An initial period of study in Applied Physics at TU Delft (2022–2023) provided a foundation in analytical and mathematical reasoning, subsequently informing a transition toward the study of intelligent systems.<sup><a href="#fn1">[1]</a></sup>`,
-    s1_p2: `Current research centers on <em>social sycophancy</em> in large language models — the tendency of such systems to adjust outputs in accordance with perceived user preferences rather than factual accuracy. This work sits at the intersection of NLP, HCI, and AI safety.`,
+    s1_p1: `Third-year BSc student in Artificial Intelligence at Utrecht University, with a prior year in Applied Physics at TU Delft (2022–2023).<sup><a href="#fn1">[1]</a></sup>`,
+    s1_p2: `Current research focuses on <em>social sycophancy</em> in large language models — how outputs shift in response to perceived user preferences rather than factual accuracy. This sits at the intersection of NLP, HCI, and AI safety.`,
     t1_caption: 'Table 1 — Author metadata',
     t1_col_field: 'Field', t1_col_value: 'Value',
     t1_location: 'Location', t1_affil: 'Affiliation', t1_dob: 'Date of birth',
     t1_langs: 'Languages', t1_langs_val: 'Dutch (native) · English (fluent)', t1_python_val: '5+ years',
     s2_heading: 'Academic Background',
     s2_1_org: 'Utrecht University',
-    s2_1_text: 'BSc Artificial Intelligence. Relevant coursework: Machine Learning, Data Structures &amp; Algorithms. Minor in Mathematics: Calculus, Linear Algebra, Programming for Mathematics. Current thesis: Social Sycophancy in LLMs across UI and API environments.',
+    s2_1_text: `<ul class="section-list">
+      <li>BSc Artificial Intelligence</li>
+      <li>Coursework: Machine Learning, Data Structures &amp; Algorithms</li>
+      <li>Minor in Mathematics: Calculus, Linear Algebra</li>
+      <li>Thesis: Social Sycophancy in LLMs across UI and API environments</li>
+    </ul>`,
     s2_2_org: 'Delft University of Technology',
-    s2_2_text: `BSc Applied Physics.<sup><a href="#fn2">[2]</a></sup> Strong analytical and mathematical foundation acquired through coursework in mechanics, electromagnetism, and mathematical physics. Transferred to AI to pursue focus on intelligent systems.`,
+    s2_2_text: `<ul class="section-list">
+      <li>BSc Applied Physics</li>
+      <li>Coursework: Mechanics, Electromagnetism, Mathematical Physics</li>
+      <li>Transferred to AI to focus on intelligent systems</li>
+    </ul>`,
     s2_3_org: 'Erasmiaans Gymnasium, Rotterdam',
-    s2_3_text: 'Gymnasium diploma. Classical pre-university education with emphasis on sciences and languages.',
+    s2_3_text: `<ul class="section-list">
+      <li>Gymnasium diploma</li>
+      <li>Classical pre-university education, sciences &amp; languages track</li>
+    </ul>`,
     s3_heading: 'Professional Experience',
     s3_1_role: 'Tutor — Mathematics, Physics &amp; Science',
     s3_1_org: "After's Cool, Rotterdam",
     s3_1_text: 'Tutored secondary school students in mathematics, physics, and science. Adapted explanations to different skill levels.',
     s3_2_role: 'All-Round Hospitality Staff',
     s3_2_org: "Jordy's Bakery, Rotterdam",
-    s3_2_text: `All-round hospitality work in a busy bakery.<sup><a href="#fn4">[4]</a></sup>`,
+    s3_2_text: `All-round hospitality work in a busy bakery.`,
     s4_heading: 'Current Research',
-    s4_p1: `The author's BSc thesis investigates <em>social sycophancy</em> in large language models — the phenomenon whereby model outputs shift in response to social pressure cues embedded in user prompts, independent of factual merit. This behaviour has significant implications for AI safety, as sycophantic models may reinforce incorrect beliefs and reduce the reliability of AI-assisted decision-making.`,
-    s4_p2: `The methodology involves a fully automated web-interaction pipeline capable of submitting structured prompts to both conversational UI environments and direct API endpoints, enabling systematic comparison of model behaviour across interaction modalities. See <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener noreferrer">github.com/Alek-Klem-UU/SycoUI</a>.`,
+    s4_p1: `BSc thesis: <em>social sycophancy</em> in large language models — how model outputs shift in response to social pressure cues, independent of factual merit. Relevant to AI safety, as sycophantic models may reinforce incorrect beliefs.`,
+    s4_p2: `Methodology: fully automated web-interaction pipeline comparing model behaviour across UI and API environments. See <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener noreferrer">github.com/Alek-Klem-UU/SycoUI</a>.`,
     fig1_caption: 'Figure 1 — Sycophancy detection pipeline (automated web-interaction framework)',
     s5_heading: 'Technical Competencies',
     s5_intro: 'A summary of technical proficiencies is provided in Table 2. Levels are self-assessed.',
@@ -552,14 +601,8 @@ const TRANSLATIONS = {
     contact_email_label: 'Email',
     fn_heading: 'Notes',
     fn1_text: 'Physics provides a useful prior for approaching ML problems — both fields involve optimising for quantities that can never be perfectly measured.',
-    fn2_text: 'At the time of enrollment, TU Delft was ranked among the top technical universities in Europe. This is noted for completeness, not as a personal achievement claim.',
-    fn3_text: 'Defined here as the tendency of a model to tell users what they want to hear. The author acknowledges the structural irony of studying this phenomenon in a document designed to impress prospective employers.',
-    fn4_text: 'See reference [4]. Not peer-reviewed.',
     ref_heading: 'References',
     ref1: `A. Klem, "Social Sycophancy in Large Language Models: Behavioural Differences Across UI and API Environments," BSc Thesis, Utrecht University, 2025. <em>In preparation.</em> <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener">github.com/Alek-Klem-UU/SycoUI</a>`,
-    ref2: `Python Software Foundation, <em>Python Language Reference</em>, version 3.x. [Online]. Available: <a href="https://www.python.org" target="_blank" rel="noopener">python.org</a>`,
-    ref3: `G. Hinton, D. E. Rumelhart, and R. J. Williams, "Learning representations by back-propagating errors," <em>Nature</em>, vol. 323, pp. 533–536, 1986. Listed to demonstrate awareness of foundational literature.`,
-    ref4: `Jordy's Bakery, <em>Staff Handbook</em>. Rotterdam, 2024. Internal document. Not publicly available.`,
   },
   nl: {
     journal_name: 'Persoonlijk Profielarchief',
@@ -572,36 +615,48 @@ const TRANSLATIONS = {
     status_label: 'Status:',
     status_val: 'In behandeling',
     abstract_heading: 'Samenvatting',
-    abstract_text: `Dit document geeft een gestructureerde beschrijving van het academische traject, de onderzoeksactiviteiten en de professionele achtergrond van de auteur. Startend met Toegepaste Natuurkunde aan de Technische Universiteit Delft (2022), stapte de auteur over naar Kunstmatige Intelligentie aan de Universiteit Utrecht (2023), waar het huidige werk gericht is op sociale sycofantie in grote taalmodellen — hoe modeloutput varieert over UI- en API-omgevingen in reactie op sociale druk.<sup><a href="#fn3">[3]</a></sup> Voorlopige resultaten suggereren dat de auteur beschikbaar is voor stages en onderzoekssamenwerking. Contactgegevens zijn te vinden in §6.`,
+    abstract_text: `BSc-student Kunstmatige Intelligentie aan de Universiteit Utrecht, met onderzoek naar sociale sycofantie in grote taalmodellen. Eerder achtergrond in Toegepaste Natuurkunde (TU Delft, 2022–2023). Beschikbaar voor stages en onderzoekssamenwerking — contactgegevens in §6.`,
     keywords_label: 'Sleutelwoorden:',
     keywords_text: 'kunstmatige intelligentie · machine learning · sycofantie · NLP · Python · Rotterdam · beschikbaar',
     toc_heading: 'Inhoudsopgave',
     toc_1: 'Introductie', toc_2: 'Academische Achtergrond', toc_3: 'Werkervaring',
     toc_4: 'Huidig Onderzoek', toc_5: 'Technische Vaardigheden', toc_6: 'Correspondentie',
     s1_heading: 'Introductie',
-    s1_p1: `De auteur (geb. 14 april 2004, Rotterdam, Nederland) is een derdejaars BSc-student Kunstmatige Intelligentie aan de Universiteit Utrecht. Een initiële studieperiode Toegepaste Natuurkunde aan de TU Delft (2022–2023) bood een fundament in analytisch en wiskundig redeneren, wat vervolgens de overstap naar de studie van intelligente systemen informeerde.<sup><a href="#fn1">[1]</a></sup>`,
-    s1_p2: `Het huidige onderzoek richt zich op <em>sociale sycofantie</em> in grote taalmodellen — de neiging van zulke systemen om output aan te passen op basis van waargenomen gebruikersvoorkeuren in plaats van feitelijke nauwkeurigheid. Dit werk bevindt zich op het snijvlak van NLP, HCI en AI-veiligheid.`,
+    s1_p1: `Derdejaars BSc-student Kunstmatige Intelligentie aan de Universiteit Utrecht, met een eerder jaar Toegepaste Natuurkunde aan de TU Delft (2022–2023).<sup><a href="#fn1">[1]</a></sup>`,
+    s1_p2: `Het huidige onderzoek richt zich op <em>sociale sycofantie</em> in grote taalmodellen — hoe output verschuift in reactie op waargenomen gebruikersvoorkeuren in plaats van feitelijke nauwkeurigheid. Dit bevindt zich op het snijvlak van NLP, HCI en AI-veiligheid.`,
     t1_caption: 'Tabel 1 — Metadata auteur',
     t1_col_field: 'Veld', t1_col_value: 'Waarde',
     t1_location: 'Locatie', t1_affil: 'Affiliatie', t1_dob: 'Geboortedatum',
     t1_langs: 'Talen', t1_langs_val: 'Nederlands (moedertaal) · Engels (vloeiend)', t1_python_val: '5+ jaar',
     s2_heading: 'Academische Achtergrond',
     s2_1_org: 'Universiteit Utrecht',
-    s2_1_text: 'BSc Kunstmatige Intelligentie. Relevante vakken: Machine Learning, Datastructuren &amp; Algoritmen. Minor Wiskunde: Calculus, Lineaire Algebra, Programmeren voor Wiskunde. Huidig scriptieonderzoek: Sociale Sycofantie in taalmodellen via UI en API.',
+    s2_1_text: `<ul class="section-list">
+      <li>BSc Kunstmatige Intelligentie</li>
+      <li>Vakken: Machine Learning, Datastructuren &amp; Algoritmen</li>
+      <li>Minor Wiskunde: Calculus, Lineaire Algebra</li>
+      <li>Scriptie: Sociale Sycofantie in taalmodellen via UI en API</li>
+    </ul>`,
     s2_2_org: 'Technische Universiteit Delft',
-    s2_2_text: `BSc Technische Natuurkunde.<sup><a href="#fn2">[2]</a></sup> Sterke analytische en wiskundige basis opgedaan via vakken in mechanica, elektromagnetisme en wiskundige fysica. Overgestapt naar AI om me te richten op intelligente systemen.`,
+    s2_2_text: `<ul class="section-list">
+      <li>BSc Technische Natuurkunde</li>
+      <li>Vakken: Mechanica, Elektromagnetisme, Wiskundige Fysica</li>
+      <li>Overgestapt naar AI om me te richten op intelligente systemen</li>
+    </ul>`,
     s2_3_org: 'Erasmiaans Gymnasium, Rotterdam',
-    s2_3_text: 'Gymnasiumdiploma. Klassiek VWO-onderwijs met nadruk op exacte vakken en talen.',
+    s2_3_text: `<ul class="section-list">
+      <li>Gymnasiumdiploma</li>
+      <li>Klassiek VWO-onderwijs, profiel exacte vakken &amp; talen</li>
+    </ul>`,
     s3_heading: 'Werkervaring',
     s3_1_role: 'Bijlesdocent — Wiskunde, Natuurkunde &amp; Science',
     s3_1_org: "After's Cool, Rotterdam",
     s3_1_text: 'Bijles gegeven aan middelbare scholieren in wiskunde, natuurkunde en science. Uitleg aangepast aan verschillende niveaus.',
     s3_2_role: 'Allround Horecamedewerker',
     s3_2_org: "Jordy's Bakery, Rotterdam",
-    s3_2_text: `Allround horecawerk in een drukke bakkerij.<sup><a href="#fn4">[4]</a></sup>`,
+    s3_2_text: `Allround horecawerk in een drukke bakkerij.`,
     s4_heading: 'Huidig Onderzoek',
-    s4_p1: `Het BSc-scriptieonderzoek van de auteur onderzoekt <em>sociale sycofantie</em> in grote taalmodellen — het fenomeen waarbij modeloutput verschuift als reactie op sociale druk in gebruikersprompts, onafhankelijk van feitelijke merites. Dit gedrag heeft significante implicaties voor AI-veiligheid, aangezien sycofante modellen onjuiste overtuigingen kunnen versterken.`,
-    s4_p2: `De methodologie omvat een volledig geautomatiseerde web-interactiepipeline die gestructureerde prompts indient bij zowel conversationele UI-omgevingen als directe API-eindpunten, wat systematische vergelijking van modelgedrag mogelijk maakt. Zie <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener noreferrer">github.com/Alek-Klem-UU/SycoUI</a>.`,
+    s4_p1: `BSc-scriptie: <em>sociale sycofantie</em> in grote taalmodellen — hoe modeloutput verschuift als reactie op sociale druk in prompts, onafhankelijk van feitelijke merites. Relevant voor AI-veiligheid, omdat sycofante modellen onjuiste overtuigingen kunnen versterken.`,
+    s4_p2: `Methodologie: volledig geautomatiseerde web-interactiepipeline die modelgedrag vergelijkt over UI- en API-omgevingen. Zie <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener noreferrer">github.com/Alek-Klem-UU/SycoUI</a>.`,
     fig1_caption: 'Figuur 1 — Sycofantiedetectiepipeline (geautomatiseerd web-interactieraamwerk)',
     s5_heading: 'Technische Vaardigheden',
     s5_intro: 'Een overzicht van technische vaardigheden is te vinden in Tabel 2. Niveaus zijn zelfbeoordeeld.',
@@ -624,14 +679,8 @@ const TRANSLATIONS = {
     contact_email_label: 'E-mail',
     fn_heading: 'Noten',
     fn1_text: 'Natuurkunde biedt een nuttige prior voor het benaderen van ML-problemen — beide vakgebieden betreffen het optimaliseren voor grootheden die nooit perfect gemeten kunnen worden.',
-    fn2_text: 'Ten tijde van de inschrijving stond de TU Delft in de top van Europese technische universiteiten. Dit wordt vermeld voor volledigheid, niet als persoonlijke prestatieclaim.',
-    fn3_text: 'Hier gedefinieerd als de neiging van een model om gebruikers te vertellen wat ze willen horen. De auteur erkent de structurele ironie van het bestuderen van dit fenomeen in een document bedoeld om potentiële werkgevers te imponeren.',
-    fn4_text: 'Zie referentie [4]. Niet peer-reviewed.',
     ref_heading: 'Referenties',
     ref1: `A. Klem, "Sociale Sycofantie in Grote Taalmodellen: Gedragsverschillen over UI- en API-omgevingen," BSc Scriptie, Universiteit Utrecht, 2025. <em>In voorbereiding.</em> <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener">github.com/Alek-Klem-UU/SycoUI</a>`,
-    ref2: `Python Software Foundation, <em>Python Language Reference</em>, versie 3.x. [Online]. Beschikbaar: <a href="https://www.python.org" target="_blank" rel="noopener">python.org</a>`,
-    ref3: `G. Hinton, D. E. Rumelhart, en R. J. Williams, "Learning representations by back-propagating errors," <em>Nature</em>, vol. 323, pp. 533–536, 1986. Vermeld als blijk van bekendheid met de fundamentele literatuur.`,
-    ref4: `Jordy's Bakery, <em>Personeelshandboek</em>. Rotterdam, 2024. Intern document. Niet openbaar beschikbaar.`,
   },
 };
 
