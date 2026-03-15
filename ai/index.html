@@ -33,8 +33,8 @@ body {
 /* ── Reading progress ── */
 #progress {
   position: fixed; top: 0; left: 0;
-  height: 1px; width: 0;
-  background: var(--accent); opacity: 0.55;
+  height: 2px; width: 0;
+  background: var(--accent); opacity: 0.75;
   z-index: 100; transition: width 0.08s linear;
 }
 
@@ -52,18 +52,20 @@ body {
 .cv-download {
   position: fixed; top: 50px; right: 18px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.60rem; font-weight: 400;
+  font-size: 0.65rem; font-weight: 400;
   letter-spacing: 0.06em;
-  padding: 5px 12px;
-  background: var(--paper); color: var(--muted);
-  border: 1px solid var(--rule-l);
+  padding: 6px 14px;
+  background: var(--accent); color: var(--paper);
+  border: 1px solid var(--accent);
   cursor: pointer; text-decoration: none;
   display: block; line-height: 1;
   z-index: 50;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-  transition: background 0.15s, color 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
 }
-.cv-download:hover { background: var(--tbl-bg); color: var(--text); }
+.cv-download:hover { background: oklch(28% 0.140 22); border-color: oklch(28% 0.140 22); box-shadow: 0 3px 12px rgba(0,0,0,0.25); }
+.cv-download:active { background: oklch(22% 0.120 22); border-color: oklch(22% 0.120 22); box-shadow: 0 1px 4px rgba(0,0,0,0.2); transform: translateY(1px); }
+.cv-download:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .lang-btn {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.65rem; font-weight: 400;
@@ -148,6 +150,7 @@ body {
 .toc a {
   display: flex; align-items: baseline;
   text-decoration: none; color: var(--text); font-size: 0.9rem;
+  transition: color 0.15s;
 }
 .toc a:hover { color: var(--accent); }
 .toc-num { min-width: 28px; flex-shrink: 0; color: var(--muted); font-size: 0.82rem; }
@@ -215,7 +218,10 @@ sup a:hover { text-decoration: underline; }
 }
 .meta-table td, .skills-table td {
   padding: 5px 12px; border-bottom: 1px solid var(--rule-l); vertical-align: top;
+  transition: background 0.12s;
 }
+.meta-table tbody tr:hover td,
+.skills-table tbody tr:hover td { background: var(--tbl-bg); }
 .meta-table tr:last-child td,
 .skills-table tr:last-child td { border-bottom: none; }
 .meta-table a { color: var(--accent); text-decoration: none; }
@@ -240,7 +246,9 @@ sup a:hover { text-decoration: underline; }
 .comp-tag {
   font-size: 0.78rem; font-style: italic; color: var(--muted);
   border: 1px solid var(--rule-l); padding: 3px 10px;
+  transition: color 0.15s, border-color 0.15s;
 }
+.comp-tag:hover { color: var(--text); border-color: var(--muted); }
 
 /* ── Research figure ── */
 .research-fig { margin: 22px 0; border: 1px solid var(--rule-l); background: var(--fig-bg); }
@@ -253,8 +261,8 @@ sup a:hover { text-decoration: underline; }
 /* ── Contact ── */
 .contact-list { list-style: none; margin-top: 14px; }
 .contact-list li { margin-bottom: 7px; }
-.contact-list a { color: var(--accent); text-decoration: none; }
-.contact-list a:hover { text-decoration: underline; }
+.contact-list a { color: var(--accent); text-decoration: none; transition: opacity 0.15s; }
+.contact-list a:hover { text-decoration: underline; opacity: 0.75; }
 .contact-label {
   font-style: italic; color: var(--muted);
   min-width: 70px; display: inline-block; font-size: 0.88rem;
@@ -305,6 +313,8 @@ a { color: var(--accent); }
   .paper-meta { flex-direction: column; align-items: center; gap: 3px; }
   .exp-header, .subsection-heading { flex-direction: column; }
   .lang-toggle { top: 10px; right: 10px; }
+  .cv-download { top: 44px; right: 10px; padding: 7px 14px; }
+  .lang-btn { padding: 7px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -320,7 +330,7 @@ a { color: var(--accent); }
   <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
   <button class="lang-btn" data-lang="nl" aria-pressed="false">NL</button>
 </div>
-<a class="cv-download" href="cv.pdf" download="Alek_Klem_CV.pdf">↓ CV</a>
+<a class="cv-download" href="cv.pdf" download="Alek_Klem_CV.pdf" aria-label="Download CV as PDF">↓ CV</a>
 
 <article>
 
@@ -716,9 +726,10 @@ window.addEventListener('scroll', () => {
   const canvas = document.getElementById('project-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  let W, H, t = 0;
+  let W, H, t = 0, visible = false, raf;
   function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
   function draw() {
+    if (!visible) return;
     ctx.clearRect(0, 0, W, H);
     t += 0.003;
     const cx = W / 2, cy = H / 2;
@@ -752,10 +763,16 @@ window.addEventListener('scroll', () => {
         ctx.fill();
       }
     });
-    requestAnimationFrame(draw);
+    raf = requestAnimationFrame(draw);
   }
+  const observer = new IntersectionObserver(entries => {
+    visible = entries[0].isIntersecting;
+    if (visible) { raf = requestAnimationFrame(draw); }
+    else { cancelAnimationFrame(raf); }
+  }, { threshold: 0 });
+  observer.observe(canvas);
   window.addEventListener('resize', resize);
-  resize(); draw();
+  resize();
 })();
 </script>
 </body>
