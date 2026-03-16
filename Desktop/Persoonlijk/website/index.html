@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alek Klem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; background: #060605; }
+
+    #morpheus-canvas {
+      position: fixed; inset: 0; width: 100%; height: 100%;
+      z-index: 1; pointer-events: none;
+    }
+
+    /* CRT scanlines */
+    .scanlines {
+      position: fixed; inset: 0; z-index: 5; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,0,0,0.025) 3px, rgba(0,0,0,0.025) 4px
+      );
+    }
+
+    /* ── Hand buttons ─────────────────────────────── */
+    .hand-btn {
+      position: fixed;
+      z-index: 20;
+      border-radius: 0;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      /* size set by JS */
+    }
+
+    #btn-left  { background: radial-gradient(ellipse at 50% 92%, rgba(255,20,20,0.85) 0%, rgba(220,0,0,0.38) 38%, transparent 70%); }
+    #btn-right { background: radial-gradient(ellipse at 50% 92%, rgba(0,210,255,0.85) 0%, rgba(0,140,230,0.38) 38%, transparent 70%); }
+
+    #btn-left:hover  { background: radial-gradient(ellipse at 50% 92%, rgba(255,30,30,1.00) 0%, rgba(230,0,0,0.55) 38%, transparent 72%); }
+    #btn-right:hover { background: radial-gradient(ellipse at 50% 92%, rgba(0,230,255,1.00) 0%, rgba(0,170,255,0.55) 38%, transparent 72%); }
+
+    /* ── Corner labels ────────────────────────────── */
+    .corner-label {
+      position: fixed;
+      top: 1.8rem;
+      z-index: 20;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(1.4rem, 3vw, 3.2rem);
+      text-decoration: none;
+      image-rendering: pixelated;
+      transition: opacity 0.25s ease;
+      opacity: 0.72;
+      pointer-events: none;
+    }
+    .corner-label:hover { opacity: 1; }
+    .corner-label--left  { left: 1.8rem;  color: #ff1414; text-shadow: 0 0 12px rgba(255,20,20,0.8), 0 0 28px rgba(255,0,0,0.5); }
+    .corner-label--right { right: 1.8rem; color: #00d2ff; text-shadow: 0 0 12px rgba(0,210,255,0.8), 0 0 28px rgba(0,180,255,0.5); }
+
+    /* ── Name ─────────────────────────────────────── */
+    .name {
+      position: fixed;
+      bottom: 1.6rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      pointer-events: none;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(0.42rem, 0.58vw, 0.66rem);
+      letter-spacing: 0.52em;
+      text-transform: uppercase;
+      color: rgba(0, 195, 55, 0.28);
+      white-space: nowrap;
+    }
+
+    #blackout {
+      position: fixed; inset: 0; background: #000;
+      z-index: 100; opacity: 0; pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hand-btn { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="blackout"></div>
+<canvas id="morpheus-canvas"></canvas>
+<div class="scanlines"></div>
+
+<a href="/horeca" id="btn-left"  class="hand-btn"></a>
+<a href="/ai"     id="btn-right" class="hand-btn"></a>
+
+<a href="/horeca" class="corner-label corner-label--left">horeca</a>
+<a href="/ai"     class="corner-label corner-label--right">research</a>
+
+<span class="name">Alek&thinsp;Klem</span>
+
+<script>
+const morphCanvas = document.getElementById('morpheus-canvas');
+const mCtx = morphCanvas.getContext('2d');
+
+// ── Hand positions as fraction of displayed image ───────
+// Tune these if the glow drifts off the actual palms.
+const HAND_L = { x: 0.295, y: 0.79 };
+const HAND_R = { x: 0.720, y: 0.79 };
+
+// ── Pixelation ──────────────────────────────────────────
+// Lower PIXEL_COLS = chunkier pixels
+const PIXEL_COLS = 72;
+
+let pixelatedCache  = null;
+let srcNaturalRatio = 0.833; // h/w, updated on image load
+
+function buildPixelatedCache(img) {
+  srcNaturalRatio = img.height / img.width;
+  const w = PIXEL_COLS;
+  const h = Math.round(w * srcNaturalRatio);
+  const off = document.createElement('canvas');
+  off.width = w; off.height = h;
+  off.getContext('2d').drawImage(img, 0, 0, w, h);
+  pixelatedCache = off;
+  positionHandBtns();
+}
+
+const morphImg = new Image();
+morphImg.onload  = () => buildPixelatedCache(morphImg);
+morphImg.onerror = () => console.warn('morpheus.jpg not found');
+morphImg.src = 'morpheus.jpg';
+
+// ── Layout helper ────────────────────────────────────────
+function getDisplayRect() {
+  const W = window.innerWidth, H = window.innerHeight;
+  const displayH = Math.round(H * 0.88);
+  const displayW = Math.round(displayH / srcNaturalRatio);
+  return {
+    dx: Math.round((W - displayW) / 2),
+    dy: Math.round((H - displayH) / 2),
+    displayW, displayH,
+  };
+}
+
+// ── Position hand buttons ────────────────────────────────
+function positionHandBtns() {
+  const { dx, dy, displayW, displayH } = getDisplayRect();
+  const size  = Math.max(56, Math.round(displayW * 0.13));
+  const coneH = Math.round(size * 2.4);
+
+  function place(id, hx, hy) {
+    const el = document.getElementById(id);
+    el.style.width  = size   + 'px';
+    el.style.height = coneH  + 'px';
+    el.style.left   = Math.round(dx + hx * displayW - size  / 2) + 'px';
+    el.style.top    = Math.round(dy + hy * displayH - coneH)     + 'px';
+  }
+
+  place('btn-left',  HAND_L.x, HAND_L.y);
+  place('btn-right', HAND_R.x, HAND_R.y);
+}
+
+// ── Resize ───────────────────────────────────────────────
+function resize() {
+  morphCanvas.width  = window.innerWidth;
+  morphCanvas.height = window.innerHeight;
+  positionHandBtns();
+}
+
+
+// ── Exit animation state ──────────────────────────────────
+let shrinkFactor = 1; // 1 = full, 0 = gone
+
+// ── Draw ─────────────────────────────────────────────────
+function drawMorpheus(t) {
+  const W = morphCanvas.width, H = morphCanvas.height;
+  mCtx.clearRect(0, 0, W, H);
+
+  // Atmospheric glow
+  const cx = W / 2, cy = H / 2;
+  const glow = mCtx.createRadialGradient(cx, cy * 0.88, 0, cx, cy, Math.min(W, H) * 0.60);
+  glow.addColorStop(0,   'rgba(0, 22, 5, 0.18)');
+  glow.addColorStop(0.7, 'rgba(0, 8,  2, 0.07)');
+  glow.addColorStop(1,   'rgba(0, 0,  0, 0)');
+  mCtx.fillStyle = glow;
+  mCtx.fillRect(0, 0, W, H);
+
+  if (!pixelatedCache) return;
+
+  const { dx, dy, displayW, displayH } = getDisplayRect();
+  const breathe = Math.round(Math.sin(t * 0.00052) * 2.5);
+  const base    = 0.62 + Math.sin(t * 0.00065) * 0.07;
+
+  // Shrink anchored to bottom
+  const curW = Math.round(displayW * shrinkFactor);
+  const curH = Math.round(displayH * shrinkFactor);
+  const curX = Math.round((W - curW) / 2);
+  const curY = (dy + displayH) - curH; // bottom stays fixed
+
+  mCtx.globalAlpha = base;
+  mCtx.imageSmoothingEnabled = false;
+  mCtx.drawImage(pixelatedCache, curX, curY + breathe, curW, curH);
+  mCtx.imageSmoothingEnabled = true;
+  mCtx.globalAlpha = 1;
+}
+
+function loop(t) {
+  drawMorpheus(t);
+  requestAnimationFrame(loop);
+}
+
+// ── Exit animation ────────────────────────────────────────
+function startExitAnimation(url) {
+  // Phase 1: fade cones + labels (~800ms)
+  ['btn-left', 'btn-right'].forEach(id => {
+    const el = document.getElementById(id);
+    el.style.transition = 'opacity 1.6s ease';
+    el.style.opacity = '0';
+  });
+  document.querySelectorAll('.corner-label, .name').forEach(el => {
+    el.style.transition = 'opacity 1.6s ease';
+    el.style.opacity = '0';
+  });
+
+  // Phase 2: shrink image from bottom (~2000ms, ease-in)
+  setTimeout(() => {
+    const duration = 2000;
+    const start = performance.now();
+    function shrinkStep(now) {
+      const p = Math.min((now - start) / duration, 1);
+      shrinkFactor = 1 - (p * p); // ease-in
+      if (p < 1) { requestAnimationFrame(shrinkStep); }
+      else {
+        const blackout = document.getElementById('blackout');
+        blackout.style.opacity = '1';
+        setTimeout(() => { window.location.href = url; }, 900);
+      }
+    }
+    requestAnimationFrame(shrinkStep);
+  }, 1800);
+}
+
+document.getElementById('btn-left').addEventListener('click',  e => { e.preventDefault(); startExitAnimation(e.currentTarget.href); });
+document.getElementById('btn-right').addEventListener('click', e => { e.preventDefault(); startExitAnimation(e.currentTarget.href); });
+
+resize();
+window.addEventListener('resize', resize);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
