@@ -17,6 +17,16 @@
   --tbl-bg:  oklch(93.5% 0.010 78);
   --fig-bg:  oklch(94%   0.010 78);
 }
+[data-theme="dark"] {
+  --paper:   oklch(14%   0.012 55);
+  --text:    oklch(93%   0.010 78);
+  --muted:   oklch(65%   0.012 70);
+  --accent:  oklch(70%   0.130 22);
+  --rule-h:  oklch(80%   0.010 55);
+  --rule-l:  oklch(36%   0.010 70);
+  --tbl-bg:  oklch(22%   0.012 55);
+  --fig-bg:  oklch(22%   0.012 55);
+}
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
@@ -78,6 +88,23 @@ body {
 .lang-btn.active { background: var(--text); color: var(--paper); }
 .lang-btn:hover:not(.active) { background: var(--tbl-bg); color: var(--text); }
 .lang-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* ── Dark mode toggle ── */
+.theme-btn {
+  position: fixed; top: 18px; left: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; font-weight: 400;
+  letter-spacing: 0.06em;
+  padding: 7px 14px;
+  background: var(--paper); color: var(--muted);
+  border: 1px solid var(--rule-l);
+  cursor: pointer; line-height: 1;
+  z-index: 50;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  transition: background 0.15s, color 0.15s;
+}
+.theme-btn:hover { background: var(--tbl-bg); color: var(--text); }
+.theme-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
 /* ── Rules ── */
 .rule-heavy { border: none; border-top: 2px solid var(--rule-h); }
@@ -326,6 +353,7 @@ a { color: var(--accent); }
   .lang-toggle { top: 10px; right: 10px; }
   .cv-download { top: 44px; right: 10px; padding: 7px 14px; }
   .lang-btn { padding: 7px 12px; }
+  .theme-btn { top: 10px; left: 10px; padding: 7px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -335,6 +363,8 @@ a { color: var(--accent); }
 <body>
 
 <div id="progress"></div>
+
+<button id="theme-btn" class="theme-btn" aria-label="Toggle dark mode">◑</button>
 
 <div class="lang-toggle" role="group" aria-label="Language">
   <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
@@ -399,9 +429,9 @@ a { color: var(--accent); }
   <!-- §1 -->
   <section id="s1" class="section">
     <h2 class="section-heading"><span class="section-num">1.</span><span data-i18n="s1_heading">Introduction</span></h2>
-    <p data-i18n="s1_p1">Third-year BSc student in Artificial Intelligence at Utrecht University, with a prior year in Applied Physics at TU Delft (2022–2023).<sup><a href="#fn1">[1]</a></sup></p>
-    <p data-i18n="s1_p2">Current research focuses on <em>social sycophancy</em> in large language models — how outputs shift in response to perceived user preferences rather than factual accuracy. This sits at the intersection of NLP, HCI, and AI safety.</p>
-    <p data-i18n="s1_p3">Unlike prior work that probes sycophancy through isolated prompt–response pairs, this study compares model behaviour across deployment contexts: a consumer web interface versus a direct API endpoint. The central hypothesis is that web interfaces introduce latent presentation effects — system-prompt modifications, interface framing — that systematically amplify sycophantic tendencies absent at the API level.</p>
+    <p data-i18n="s1_p1">Third-year BSc student in Artificial Intelligence at Utrecht University, with a prior year in Applied Physics at TU Delft (2022–2023).</p>
+    <p data-i18n="s1_p2">Research topic: <em>social sycophancy</em> in large language models, as defined and measured by the ELEPHANT benchmark.<sup><a href="#ref2">[2]</a></sup> The question is why model outputs shift toward perceived user preferences rather than factual accuracy, with implications for NLP, HCI, and AI safety.</p>
+    <p data-i18n="s1_p3">This study extends prior work by comparing model behaviour across two deployment contexts: a consumer web interface and a direct API endpoint. The hypothesis is that web interfaces amplify sycophantic tendencies through hidden factors such as system-prompt modifications and interface framing, which are absent in raw API behaviour.</p>
     <div class="fig" style="margin-top:22px;">
       <div class="fig-caption-top" data-i18n="t1_caption">Table 1 — Author metadata</div>
       <table class="meta-table">
@@ -473,62 +503,6 @@ a { color: var(--accent); }
     <h2 class="section-heading"><span class="section-num">4.</span><span data-i18n="s4_heading">Current Research</span></h2>
     <p data-i18n="s4_p1">BSc thesis: <em>social sycophancy</em> in large language models — how model outputs shift in response to social pressure cues, independent of factual merit. Relevant to AI safety, as sycophantic models may reinforce incorrect beliefs.</p>
     <p data-i18n="s4_p2">Methodology: fully automated web-interaction pipeline comparing model behaviour across UI and API environments. See <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener noreferrer">github.com/Alek-Klem-UU/SycoUI</a>.</p>
-    <div class="research-fig">
-      <svg viewBox="0 0 580 182" xmlns="http://www.w3.org/2000/svg"
-           style="width:100%;height:auto;display:block;padding:20px 16px 12px"
-           role="img" aria-label="Sycophancy detection pipeline diagram">
-        <defs>
-          <marker id="pd-arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-            <path d="M0,1 L5,3 L0,5 Z" style="fill:oklch(62% 0.012 70)"/>
-          </marker>
-        </defs>
-        <!-- Shared prompt -->
-        <rect x="210" y="8" width="160" height="26" rx="1"
-              style="fill:oklch(93.5% 0.010 78);stroke:oklch(76% 0.013 78);stroke-width:0.8"/>
-        <text x="290" y="25" text-anchor="middle"
-              style="font-family:'JetBrains Mono',monospace;font-size:10px;fill:oklch(22% 0.022 55)">prompt p</text>
-        <!-- Split lines -->
-        <line x1="258" y1="34" x2="140" y2="62" marker-end="url(#pd-arr)"
-              style="stroke:oklch(62% 0.012 70);stroke-width:0.8"/>
-        <line x1="322" y1="34" x2="440" y2="62" marker-end="url(#pd-arr)"
-              style="stroke:oklch(62% 0.012 70);stroke-width:0.8"/>
-        <!-- Web UI box -->
-        <rect x="56" y="62" width="168" height="26" rx="1"
-              style="fill:oklch(93.5% 0.010 78);stroke:oklch(76% 0.013 78);stroke-width:0.8"/>
-        <text x="140" y="79" text-anchor="middle"
-              style="font-family:'JetBrains Mono',monospace;font-size:10px;fill:oklch(22% 0.022 55)">web UI session</text>
-        <!-- API box -->
-        <rect x="356" y="62" width="168" height="26" rx="1"
-              style="fill:oklch(93.5% 0.010 78);stroke:oklch(76% 0.013 78);stroke-width:0.8"/>
-        <text x="440" y="79" text-anchor="middle"
-              style="font-family:'JetBrains Mono',monospace;font-size:10px;fill:oklch(22% 0.022 55)">API call</text>
-        <!-- Down arrows -->
-        <line x1="140" y1="88" x2="140" y2="108" marker-end="url(#pd-arr)"
-              style="stroke:oklch(62% 0.012 70);stroke-width:0.8"/>
-        <line x1="440" y1="88" x2="440" y2="108" marker-end="url(#pd-arr)"
-              style="stroke:oklch(62% 0.012 70);stroke-width:0.8"/>
-        <!-- Response boxes -->
-        <rect x="56" y="108" width="168" height="26" rx="1"
-              style="fill:oklch(93.5% 0.010 78);stroke:oklch(76% 0.013 78);stroke-width:0.8"/>
-        <text x="140" y="125" text-anchor="middle"
-              style="font-family:'JetBrains Mono',monospace;font-size:10px;fill:oklch(48% 0.016 70)">response r_ui</text>
-        <rect x="356" y="108" width="168" height="26" rx="1"
-              style="fill:oklch(93.5% 0.010 78);stroke:oklch(76% 0.013 78);stroke-width:0.8"/>
-        <text x="440" y="125" text-anchor="middle"
-              style="font-family:'JetBrains Mono',monospace;font-size:10px;fill:oklch(48% 0.016 70)">response r_api</text>
-        <!-- Converge lines -->
-        <line x1="224" y1="134" x2="272" y2="152" marker-end="url(#pd-arr)"
-              style="stroke:oklch(62% 0.012 70);stroke-width:0.8"/>
-        <line x1="356" y1="134" x2="308" y2="152" marker-end="url(#pd-arr)"
-              style="stroke:oklch(62% 0.012 70);stroke-width:0.8"/>
-        <!-- Delta box (accent-tinted) -->
-        <rect x="190" y="154" width="200" height="22" rx="1"
-              style="fill:oklch(91% 0.018 22);stroke:oklch(52% 0.110 22);stroke-width:0.8"/>
-        <text x="290" y="169" text-anchor="middle"
-              style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:oklch(30% 0.130 22)">&#916;(r_ui, r_api) &#8594; sycophancy score</text>
-      </svg>
-      <div class="fig-caption-bottom" data-i18n="fig1_caption">Figure 1 — Sycophancy detection pipeline (automated web-interaction framework)</div>
-    </div>
   </section>
 
   <hr class="rule-section">
@@ -536,7 +510,7 @@ a { color: var(--accent); }
   <!-- §5 -->
   <section id="s5" class="section">
     <h2 class="section-heading"><span class="section-num">5.</span><span data-i18n="s5_heading">Technical Competencies</span></h2>
-    <p data-i18n="s5_intro">A summary of technical proficiencies is provided in Table 2. Levels are self-assessed.</p>
+    <p data-i18n="s5_intro">Technical proficiencies in Table 2. Levels are self-assessed.</p>
     <div class="fig" style="margin-top:16px;">
       <div class="fig-caption-top" data-i18n="t2_caption">Table 2 — Technical proficiencies</div>
       <table class="skills-table">
@@ -583,15 +557,11 @@ a { color: var(--accent); }
 
   <hr class="rule-section">
 
-  <section class="footnotes" aria-label="Notes">
-    <div class="footnotes-heading" data-i18n="fn_heading">Notes</div>
-    <div class="footnote" id="fn1"><span class="footnote-num">[1]</span><span data-i18n="fn1_text">Physics provides a useful prior for approaching ML problems — both fields involve optimising for quantities that can never be perfectly measured.</span></div>
-  </section>
-
   <section class="references">
     <div class="references-heading" data-i18n="ref_heading">References</div>
     <ol class="ref-list">
       <li><span class="ref-num">[1]</span><span data-i18n="ref1">A. Klem, "Social Sycophancy in Large Language Models: Behavioural Differences Across UI and API Environments," BSc Thesis, Utrecht University, 2025. <em>In preparation.</em> <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener">github.com/Alek-Klem-UU/SycoUI</a></span></li>
+      <li id="ref2"><span class="ref-num">[2]</span><span data-i18n="ref2">M. Cheng, S. Yu, C. Lee, P. Khadpe, L. Ibrahim, D. Jurafsky, "ELEPHANT: Measuring and understanding social sycophancy in LLMs," arXiv:2505.13995, 2025. <a href="https://arxiv.org/abs/2505.13995" target="_blank" rel="noopener">arxiv.org/abs/2505.13995</a></span></li>
     </ol>
   </section>
 
@@ -622,9 +592,9 @@ const TRANSLATIONS = {
     toc_1: 'Introduction', toc_2: 'Academic Background', toc_3: 'Professional Experience',
     toc_4: 'Current Research', toc_5: 'Technical Competencies', toc_6: 'Correspondence',
     s1_heading: 'Introduction',
-    s1_p1: `Third-year BSc student in Artificial Intelligence at Utrecht University, with a prior year in Applied Physics at TU Delft (2022–2023).<sup><a href="#fn1">[1]</a></sup>`,
-    s1_p2: `Current research focuses on <em>social sycophancy</em> in large language models — how outputs shift in response to perceived user preferences rather than factual accuracy. This sits at the intersection of NLP, HCI, and AI safety.`,
-    s1_p3: `Unlike prior work that probes sycophancy through isolated prompt–response pairs, this study compares model behaviour across deployment contexts: a consumer web interface versus a direct API endpoint. The central hypothesis is that web interfaces introduce latent presentation effects — system-prompt modifications, interface framing — that systematically amplify sycophantic tendencies absent at the API level.`,
+    s1_p1: `Third-year BSc student in Artificial Intelligence at Utrecht University, with a prior year in Applied Physics at TU Delft (2022–2023).`,
+    s1_p2: `Research topic: <em>social sycophancy</em> in large language models — why model outputs shift toward user preferences over factual accuracy, measured using the ELEPHANT benchmark.<sup><a href="#ref2">[2]</a></sup> Relevant to NLP, HCI, and AI safety.`,
+    s1_p3: `Compares model behaviour across two deployment contexts: a web interface and a direct API. Hypothesis: web interfaces amplify sycophantic tendencies via hidden system-prompt modifications and interface framing absent in direct API calls.`,
     t1_caption: 'Table 1 — Author metadata',
     t1_col_field: 'Field', t1_col_value: 'Value',
     t1_location: 'Location', t1_affil: 'Affiliation', t1_dob: 'Date of birth',
@@ -656,11 +626,10 @@ const TRANSLATIONS = {
     s3_2_org: "Jordy's Bakery, Rotterdam",
     s3_2_text: `All-round hospitality work in a busy bakery.`,
     s4_heading: 'Current Research',
-    s4_p1: `BSc thesis: <em>social sycophancy</em> in large language models — how model outputs shift in response to social pressure cues, independent of factual merit. Relevant to AI safety, as sycophantic models may reinforce incorrect beliefs.`,
+    s4_p1: `BSc thesis: <em>social sycophancy</em> in LLMs — model outputs shifting toward user preferences regardless of factual content, measured using the ELEPHANT benchmark. Relevant to AI safety: sycophantic models may reinforce false beliefs.`,
     s4_p2: `Methodology: fully automated web-interaction pipeline comparing model behaviour across UI and API environments. See <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener noreferrer">github.com/Alek-Klem-UU/SycoUI</a>.`,
-    fig1_caption: 'Figure 1 — Sycophancy detection pipeline (automated web-interaction framework)',
     s5_heading: 'Technical Competencies',
-    s5_intro: 'A summary of technical proficiencies is provided in Table 2. Levels are self-assessed.',
+    s5_intro: 'Technical proficiencies in Table 2. Levels are self-assessed.',
     t2_caption: 'Table 2 — Technical proficiencies',
     t2_skill: 'Skill', t2_domain: 'Domain', t2_level: 'Level',
     domain_technical: 'Technical', domain_math: 'Mathematics', domain_language: 'Language',
@@ -676,12 +645,11 @@ const TRANSLATIONS = {
     comp_proactive: 'Proactive Attitude', comp_sustainability: 'Sustainability-minded',
     comp_learner: 'Fast Learner', comp_firstprinciples: 'First-principles Thinking',
     s6_heading: 'Correspondence',
-    s6_text: 'The author is reachable via the following channels and is open to internships, research collaborations, and interesting conversations.',
+    s6_text: 'Open to internships and research collaborations.',
     contact_email_label: 'Email',
-    fn_heading: 'Notes',
-    fn1_text: 'Physics provides a useful prior for approaching ML problems — both fields involve optimising for quantities that can never be perfectly measured.',
     ref_heading: 'References',
     ref1: `A. Klem, "Social Sycophancy in Large Language Models: Behavioural Differences Across UI and API Environments," BSc Thesis, Utrecht University, 2025. <em>In preparation.</em> <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener">github.com/Alek-Klem-UU/SycoUI</a>`,
+    ref2: `M. Cheng, S. Yu, C. Lee, P. Khadpe, L. Ibrahim, D. Jurafsky, "ELEPHANT: Measuring and understanding social sycophancy in LLMs," arXiv:2505.13995, 2025. <a href="https://arxiv.org/abs/2505.13995" target="_blank" rel="noopener">arxiv.org/abs/2505.13995</a>`,
   },
   nl: {
     journal_name: 'Persoonlijk Profielarchief',
@@ -694,16 +662,16 @@ const TRANSLATIONS = {
     status_label: 'Status:',
     status_val: 'In behandeling',
     abstract_heading: 'Samenvatting',
-    abstract_text: `BSc-student Kunstmatige Intelligentie aan de Universiteit Utrecht, met onderzoek naar sociale sycofantie in grote taalmodellen. Eerder achtergrond in Toegepaste Natuurkunde (TU Delft, 2022–2023). Beschikbaar voor stages en onderzoekssamenwerking — contactgegevens in §6.`,
+    abstract_text: `BSc-student Kunstmatige Intelligentie aan de Universiteit Utrecht, met onderzoek naar sociale sycofantie in grote taalmodellen. Eerder achtergrond in Technische Natuurkunde (TU Delft, 2022–2023). Beschikbaar voor stages en onderzoekssamenwerking, contactgegevens in §6.`,
     keywords_label: 'Sleutelwoorden:',
     keywords_text: 'kunstmatige intelligentie · machine learning · sycofantie · NLP · Python · Rotterdam · beschikbaar',
     toc_heading: 'Inhoudsopgave',
     toc_1: 'Introductie', toc_2: 'Academische Achtergrond', toc_3: 'Werkervaring',
     toc_4: 'Huidig Onderzoek', toc_5: 'Technische Vaardigheden', toc_6: 'Correspondentie',
     s1_heading: 'Introductie',
-    s1_p1: `Derdejaars BSc-student Kunstmatige Intelligentie aan de Universiteit Utrecht, met een eerder jaar Toegepaste Natuurkunde aan de TU Delft (2022–2023).<sup><a href="#fn1">[1]</a></sup>`,
-    s1_p2: `Het huidige onderzoek richt zich op <em>sociale sycofantie</em> in grote taalmodellen — hoe output verschuift in reactie op waargenomen gebruikersvoorkeuren in plaats van feitelijke nauwkeurigheid. Dit bevindt zich op het snijvlak van NLP, HCI en AI-veiligheid.`,
-    s1_p3: `In tegenstelling tot eerder onderzoek dat sycofantie meet via geïsoleerde prompt–responseparen, vergelijkt deze studie modelgedrag over deploymentomgevingen: een consumentenwebinterface versus een directe API-aanroep. De centrale hypothese is dat webinterfaces latente presentatie-effecten introduceren — systeempromptaanpassingen, interfaceframing — die sycofante neigingen systematisch versterken ten opzichte van API-basisgedrag.`,
+    s1_p1: `Derdejaars BSc-student Kunstmatige Intelligentie aan de Universiteit Utrecht, met een eerder jaar Technische Natuurkunde aan de TU Delft (2022–2023).`,
+    s1_p2: `Onderwerp: <em>sociale sycofantie</em> in grote taalmodellen — waarom modeloutput verschuift naar gebruikersvoorkeuren in plaats van feitelijke nauwkeurigheid, gemeten via de ELEPHANT-benchmark.<sup><a href="#ref2">[2]</a></sup> Relevant voor NLP, HCI en AI-veiligheid.`,
+    s1_p3: `Vergelijkt modelgedrag over twee omgevingen: een webinterface en een directe API. Hypothese: webinterfaces versterken sycofante neigingen via verborgen systeempromptaanpassingen en interfaceframing die in directe API-aanroepen ontbreken.`,
     t1_caption: 'Tabel 1 — Metadata auteur',
     t1_col_field: 'Veld', t1_col_value: 'Waarde',
     t1_location: 'Locatie', t1_affil: 'Affiliatie', t1_dob: 'Geboortedatum',
@@ -735,11 +703,10 @@ const TRANSLATIONS = {
     s3_2_org: "Jordy's Bakery, Rotterdam",
     s3_2_text: `Allround horecawerk in een drukke bakkerij.`,
     s4_heading: 'Huidig Onderzoek',
-    s4_p1: `BSc-scriptie: <em>sociale sycofantie</em> in grote taalmodellen — hoe modeloutput verschuift als reactie op sociale druk in prompts, onafhankelijk van feitelijke merites. Relevant voor AI-veiligheid, omdat sycofante modellen onjuiste overtuigingen kunnen versterken.`,
+    s4_p1: `BSc-scriptie: <em>sociale sycofantie</em> in taalmodellen — modeloutput die verschuift naar gebruikersvoorkeuren ongeacht feitelijke inhoud, gemeten via de ELEPHANT-benchmark. Relevant voor AI-veiligheid: sycofante modellen kunnen onjuiste overtuigingen versterken.`,
     s4_p2: `Methodologie: volledig geautomatiseerde web-interactiepipeline die modelgedrag vergelijkt over UI- en API-omgevingen. Zie <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener noreferrer">github.com/Alek-Klem-UU/SycoUI</a>.`,
-    fig1_caption: 'Figuur 1 — Sycofantiedetectiepipeline (geautomatiseerd web-interactieraamwerk)',
     s5_heading: 'Technische Vaardigheden',
-    s5_intro: 'Een overzicht van technische vaardigheden is te vinden in Tabel 2. Niveaus zijn zelfbeoordeeld.',
+    s5_intro: 'Technische vaardigheden in Tabel 2. Niveaus zijn zelfbeoordeeld.',
     t2_caption: 'Tabel 2 — Technische vaardigheden',
     t2_skill: 'Vaardigheid', t2_domain: 'Domein', t2_level: 'Niveau',
     domain_technical: 'Technisch', domain_math: 'Wiskunde', domain_language: 'Taal',
@@ -755,10 +722,8 @@ const TRANSLATIONS = {
     comp_proactive: 'Proactieve Houding', comp_sustainability: 'Duurzaamheidsgericht',
     comp_learner: 'Snelle Leerder', comp_firstprinciples: 'First-principles Denken',
     s6_heading: 'Correspondentie',
-    s6_text: 'De auteur is bereikbaar via onderstaande kanalen en staat open voor stages, onderzoekssamenwerking en interessante gesprekken.',
+    s6_text: 'Bereikbaar voor stages en onderzoekssamenwerking.',
     contact_email_label: 'E-mail',
-    fn_heading: 'Noten',
-    fn1_text: 'Natuurkunde biedt een nuttige prior voor het benaderen van ML-problemen — beide vakgebieden betreffen het optimaliseren voor grootheden die nooit perfect gemeten kunnen worden.',
     ref_heading: 'Referenties',
     ref1: `A. Klem, "Sociale Sycofantie in Grote Taalmodellen: Gedragsverschillen over UI- en API-omgevingen," BSc Scriptie, Universiteit Utrecht, 2025. <em>In voorbereiding.</em> <a href="https://github.com/Alek-Klem-UU/SycoUI" target="_blank" rel="noopener">github.com/Alek-Klem-UU/SycoUI</a>`,
   },
@@ -783,6 +748,18 @@ function setLanguage(lang) {
   setLanguage(saved);
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+  });
+
+  const themeBtn = document.getElementById('theme-btn');
+  const setTheme = (dark) => {
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    themeBtn.textContent = dark ? '◐' : '◑';
+    themeBtn.setAttribute('aria-pressed', dark);
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  };
+  setTheme(localStorage.getItem('theme') === 'dark');
+  themeBtn.addEventListener('click', () => {
+    setTheme(document.documentElement.dataset.theme !== 'dark');
   });
 })();
 
