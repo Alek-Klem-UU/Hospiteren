@@ -440,7 +440,7 @@ function loop(t) {
 
 // ── Opening-hands frame animation ────────────────────────
 function playOpeningAnimation() {
-  const totalDuration = 3000;
+  const totalDuration = 2000;
   const start = performance.now();
   function step(now) {
     const elapsed = now - start;
@@ -462,7 +462,7 @@ function playOpeningAnimation() {
 
 // ── Neon flicker cone entrance ────────────────────────────
 function animateConeIn() {
-  const duration = 2000;
+  const duration = 1000;
   const start = performance.now();
   function step(now) {
     const p = Math.min((now - start) / duration, 1);
