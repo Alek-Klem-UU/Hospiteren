@@ -91,6 +91,15 @@
       transition: opacity 0.3s ease;
     }
 
+    @media (max-width: 768px) {
+      .corner-label {
+        font-size: clamp(1.6rem, 7vw, 2.8rem);
+        bottom: 44%;
+      }
+      .corner-label--left  { left: 1rem; }
+      .corner-label--right { right: 1rem; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .hand-btn { animation: none !important; }
     }
@@ -231,8 +240,14 @@ function getCurrentDisplayFrame() {
 // ── Layout helper ────────────────────────────────────────
 function getDisplayRect() {
   const W = window.innerWidth, H = window.innerHeight;
-  const displayH = Math.round(H * 0.88);
-  const displayW = Math.round(displayH / srcNaturalRatio);
+  let displayH = Math.round(H * 0.88);
+  let displayW = Math.round(displayH / srcNaturalRatio);
+  // On narrow screens, constrain width so Morpheus doesn't overflow
+  const maxW = Math.round(W * 0.90);
+  if (displayW > maxW) {
+    displayW = maxW;
+    displayH = Math.round(displayW * srcNaturalRatio);
+  }
   return {
     dx: Math.round((W - displayW) / 2),
     dy: Math.round((H - displayH) / 2),
@@ -282,6 +297,21 @@ let coneJitterR = { x: 0, y: 0 };
 let lastJitterTime = 0;
 const JITTER_INTERVAL = 220; // ms between jitter updates
 
+// Idle pulse — breathes opacity after 4s of no interaction
+let lastInteractionTime = 0;
+let idleAlpha = 0.82;
+
+function updateIdlePulse(t) {
+  if (coneOpacity < 1) { idleAlpha = 0.82; return; }
+  const idle = t - lastInteractionTime;
+  if (idle > 4000) {
+    const pt = (idle - 4000) / 3000; // cycles every 3s
+    idleAlpha = 0.885 - 0.065 * Math.cos(pt * Math.PI * 2); // 0.82 → 0.95 → 0.82
+  } else {
+    idleAlpha = 0.82;
+  }
+}
+
 function updateJitter(t) {
   if (t - lastJitterTime < JITTER_INTERVAL) return;
   lastJitterTime = t;
@@ -328,13 +358,13 @@ function drawCones(sinkY) {
 
   mCtx.imageSmoothingEnabled = false;
 
-  mCtx.globalAlpha = coneOpacity * (hoverLeft ? 1.0 : 0.82);
+  mCtx.globalAlpha = coneOpacity * (hoverLeft ? 1.0 : idleAlpha);
   mCtx.drawImage(coneCacheL,
     Math.round(dx + HAND_L.x * displayW - size / 2) + coneJitterL.x,
     Math.round(dy + HAND_L.y * displayH - coneH) + sinkY + coneJitterL.y,
     size, coneH);
 
-  mCtx.globalAlpha = coneOpacity * (hoverRight ? 1.0 : 0.82);
+  mCtx.globalAlpha = coneOpacity * (hoverRight ? 1.0 : idleAlpha);
   mCtx.drawImage(coneCacheR,
     Math.round(dx + HAND_R.x * displayW - size / 2) + coneJitterR.x,
     Math.round(dy + HAND_R.y * displayH - coneH) + sinkY + coneJitterR.y,
@@ -344,12 +374,15 @@ function drawCones(sinkY) {
   mCtx.globalAlpha = 1;
 }
 
+// Touch device detection
+const isTouch = window.matchMedia('(hover: none)').matches;
+
 // Hover listeners — also drive corner label visibility
 const labelLeft  = document.querySelector('.corner-label--left');
 const labelRight = document.querySelector('.corner-label--right');
 
 document.getElementById('btn-left').addEventListener('mouseenter', () => {
-  hoverLeft = true;
+  hoverLeft = true; lastInteractionTime = performance.now();
   labelLeft.style.transition = 'opacity 0.4s ease';
   labelLeft.style.opacity = '1';
   startSmile();
@@ -361,7 +394,7 @@ document.getElementById('btn-left').addEventListener('mouseleave', () => {
   reverseSmile();
 });
 document.getElementById('btn-right').addEventListener('mouseenter', () => {
-  hoverRight = true;
+  hoverRight = true; lastInteractionTime = performance.now();
   labelRight.style.transition = 'opacity 0.4s ease';
   labelRight.style.opacity = '1';
   startSmile();
@@ -396,6 +429,7 @@ function drawMorpheus(t) {
   mCtx.globalAlpha = 1;
 
   updateJitter(t);
+  updateIdlePulse(t);
   drawCones(sinkY + breathe);
 }
 
@@ -444,8 +478,15 @@ function animateConeIn() {
       requestAnimationFrame(step);
     } else {
       coneOpacity = 1;
+      lastInteractionTime = performance.now();
       document.getElementById('btn-left').style.pointerEvents  = 'auto';
       document.getElementById('btn-right').style.pointerEvents = 'auto';
+      if (isTouch) {
+        labelLeft.style.transition  = 'opacity 0.8s ease';
+        labelRight.style.transition = 'opacity 0.8s ease';
+        labelLeft.style.opacity  = '1';
+        labelRight.style.opacity = '1';
+      }
     }
   }
   requestAnimationFrame(step);
@@ -527,7 +568,7 @@ function resetState() {
   blackout.style.opacity = '1';
   document.querySelectorAll('.corner-label').forEach(el => {
     el.style.transition = 'none';
-    el.style.opacity = '0';
+    el.style.opacity = isTouch ? '1' : '0';
   });
   // Fade out the blackout overlay
   setTimeout(() => {
